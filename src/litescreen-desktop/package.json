@@ -1,0 +1,19 @@
+{
+  "name": "litescreen-desktop",
+  "version": "0.0.1",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "dev": "npm run build && cross-env NODE_ENV=development electron .",
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^40.1.0",
+    "@types/node": "^25.1.0",
+    "cross-env": "^10.1.0",
+    "electron-builder": "^26.4.0",
+    "typescript": "^5.9.3"
+  }
+}
