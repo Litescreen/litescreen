@@ -1,5 +1,25 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, protocol, net } from 'electron'
 import * as path from 'path'
+import { existsSync, statSync } from 'fs'
+import { pathToFileURL } from 'url'
+
+const PUBLIC_DIR = path.join(__dirname, '../renderer/public')
+
+/**
+ * Introduce a custom protocol to serve what would normally be relative server paths for the spa.
+ */
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'app',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      stream: true
+    }
+  }
+])
 
 let mainWindow: BrowserWindow | null = null
 
@@ -18,7 +38,8 @@ function createWindow(): void {
     mainWindow.loadURL('http://localhost:3000')
     mainWindow.webContents.openDevTools()
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../renderer/public/index.html'))
+    // Target index.vue against a dummy hostname for the protocol.
+    mainWindow.loadURL('app://placeholderHostname/')
   }
  
   mainWindow.on('closed', () => {
@@ -27,6 +48,25 @@ function createWindow(): void {
 }
 
 app.whenReady().then(() => {
+
+  protocol.handle('app', (request) => {
+    const url = new URL(request.url)
+    const relativePath = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname)
+    let filePath = path.join(PUBLIC_DIR, relativePath)
+
+    if (!filePath.startsWith(PUBLIC_DIR + path.sep) && filePath !== PUBLIC_DIR) {
+      return new Response('Forbidden', { status: 403 })
+    }
+
+    // Not a real file on disk (e.g. a client-side route like /playlists) —
+    // fall back to index.html so the spa router can take over and resolve it.
+    if (!existsSync(filePath) || statSync(filePath).isDirectory()) {
+      filePath = path.join(PUBLIC_DIR, 'index.html')
+    }
+
+    return net.fetch(pathToFileURL(filePath).toString())
+  })
+
   ipcMain.on('test-event', () => console.log('Hi from the renderer!'))
 
   createWindow()
