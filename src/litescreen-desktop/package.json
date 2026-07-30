@@ -6,7 +6,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "dev": "npm run build && cross-env NODE_ENV=development electron .",
-    "start": "electron .",
+    "start": "npm run build && electron .",
     "package": "electron-builder"
   },
   "devDependencies": {
