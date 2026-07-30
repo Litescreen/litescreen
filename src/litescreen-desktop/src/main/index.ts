@@ -4,13 +4,16 @@ import { existsSync, statSync } from 'fs'
 import { pathToFileURL } from 'url'
 
 const PUBLIC_DIR = path.join(__dirname, '../renderer/public')
+const PROTOCOL = 'app';
+
+//#region Setup custom protocol
 
 /**
  * Introduce a custom protocol to serve what would normally be relative server paths for the spa.
  */
 protocol.registerSchemesAsPrivileged([
   {
-    scheme: 'app',
+    scheme: PROTOCOL,
     privileges: {
       standard: true,
       secure: true,
@@ -21,35 +24,12 @@ protocol.registerSchemesAsPrivileged([
   }
 ])
 
-let mainWindow: BrowserWindow | null = null
-
-function createWindow(): void {
-  mainWindow = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      preload: path.join(__dirname, '../preload/index.js')
-    }
-  })
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:3000')
-    mainWindow.webContents.openDevTools()
-  } else {
-    // Target index.vue against a dummy hostname for the protocol.
-    mainWindow.loadURL('app://placeholderHostname/')
-  }
- 
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-}
-
-app.whenReady().then(() => {
-
-  protocol.handle('app', (request) => {
+/**
+ * Configures the custom protocol to serve the would-be web server files.
+ */
+const configureProtocol = () => {
+  
+  protocol.handle(PROTOCOL, (request) => {
     const url = new URL(request.url)
     const relativePath = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname)
     let filePath = path.join(PUBLIC_DIR, relativePath)
@@ -67,8 +47,38 @@ app.whenReady().then(() => {
     return net.fetch(pathToFileURL(filePath).toString())
   })
 
-  ipcMain.on('test-event', () => console.log('Hi from the renderer!'))
+}
 
+//#endregion Setup custom protocol
+
+let mainWindow: BrowserWindow | null = null
+const createWindow = () => {
+  mainWindow = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, '../preload/index.js')
+    }
+  })
+
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.loadURL('http://localhost:3000')
+    mainWindow.webContents.openDevTools()
+  } else {
+    // Target index.vue against a dummy hostname for the protocol.
+    mainWindow.loadURL(`${PROTOCOL}://placeholderHostname/`)
+  }
+ 
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+}
+
+app.whenReady().then(() => {
+
+  configureProtocol();
   createWindow()
 
   app.on('activate', () => {
