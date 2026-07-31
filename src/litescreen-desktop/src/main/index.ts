@@ -56,12 +56,15 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    title: 'Litescreen Desktop',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, '../preload/index.js')
     }
   })
+
+  mainWindow.maximize();
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:3000')
