@@ -1,0 +1,7 @@
+{
+  "name": "litescreen",
+  "private": true,
+  "workspaces": [
+    "src/*"
+  ]
+}
