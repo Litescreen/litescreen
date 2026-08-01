@@ -1,0 +1,13 @@
+{
+  "name": "@litescreen/core",
+  "version": "1.0.0",
+  "description": "The shared package for the litescreen frontend applications.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./*": "./src/*/index.ts"
+  },
+  "dependencies": {
+    "typescript": "^7.0.2"
+  }
+}
