@@ -1,4 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
+// import { IPCSenderChannels } from '@main/ipc'
+import { IPCSenderChannels } from '@litescreen/core/ipc';
 
 export interface ElectronAPI {
   // Add your API methods here
@@ -6,5 +8,6 @@ export interface ElectronAPI {
 }
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  exampleMethod: () => ipcRenderer.send('test-event')
+  exampleMethod: () => ipcRenderer.send('test-event'),
+  checkForUpdates: () => ipcRenderer.send(IPCSenderChannels.UpdateCheck)
 } as ElectronAPI)

@@ -15,5 +15,8 @@
     "cross-env": "^10.1.0",
     "electron-builder": "^26.4.0",
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@litescreen/core": "*"
   }
 }
