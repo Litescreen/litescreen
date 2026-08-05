@@ -1,4 +1,7 @@
 import { Configuration } from 'electron-builder'
+import * as path from 'path'
+
+const iconPath = path.join(__dirname, './dist/renderer/public/icon.png');
 
 const config: Configuration = {
   appId: 'com.litescreen.desktop',
@@ -16,13 +19,23 @@ const config: Configuration = {
     main: "dist/main/index.js"
   },
   mac: {
-    target: ["dmg", "zip"]
+    target: ["dmg"],
+    icon: iconPath
   },
   win: {
-    target: ["nsis", "portable"]
+    target: ["nsis"],
+    icon: iconPath
+  },
+  // Allow both NSIS user installs and machine installs.
+  nsis: {
+    oneClick: false,
+    perMachine: false,
+    allowElevation: true,
+    allowToChangeInstallationDirectory: true
   },
   linux: {
-    target: ["AppImage", "deb"]
+    target: ["AppImage"],
+    icon: iconPath
   }
 }
 
