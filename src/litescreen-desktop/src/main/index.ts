@@ -57,6 +57,8 @@ const createWindow = () => {
     width: 1200,
     height: 800,
     title: 'Litescreen Desktop',
+    // Grab the icon frm the built spa
+    icon: path.join(__dirname, '../renderer/public/icon.png'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
