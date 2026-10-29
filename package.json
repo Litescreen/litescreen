@@ -3,5 +3,13 @@
   "private": true,
   "workspaces": [
     "src/*"
-  ]
+  ],
+  "scripts": {
+    "dev:console": "npm run dev --workspace=litescreen-console",
+    "dev:desktop": "npm run dev --workspace=litescreen-desktop",
+    "build:console": "npm run generate --workspace=litescreen-console",
+    "build:desktop": "npm run build --workspace=litescreen-desktop",
+    "build": "npm run build:console && npm run build:desktop",
+    "package": "npm run build && npm run package --workspace=litescreen-desktop"
+  }
 }

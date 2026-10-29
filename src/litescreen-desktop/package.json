@@ -17,6 +17,6 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@litescreen/core": "*"
+    "@litescreen/client-core": "*"
   }
 }
