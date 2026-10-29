@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="src/litescreen-api/LitescreenApi.csproj" Id="59b17d1a-e37a-499b-bc34-e498e92d596f" />
+  <Project Path="src/litescreen-cli/LitescreenCli.csproj" Id="6cab0b40-5c59-4d4f-b3f2-aac9cb3beb36" />
+</Solution>
