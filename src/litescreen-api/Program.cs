@@ -1,7 +1,47 @@
 using LitescreenApi;
 using Microsoft.OpenApi;
+using Spectre.Console;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+#region Configure Spectre Console decorator.
+
+var themeColor = new Color(249, 115, 22);
+
+var version = Assembly
+                .GetExecutingAssembly()
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion ?? "Unknown Version";
+
+var hostAppEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+var figletText = new FigletText(ApiConstants.AppName).LeftJustified().Color(themeColor);
+AnsiConsole.Write(figletText);
+
+// Create a table
+var table = new Table().HideHeaders();
+table.AddColumn("");
+table.AddColumn(new TableColumn(""));
+table.AddRow("Name", ApiConstants.AppName);
+table.AddRow("Version", version);
+table.AddRow("Start time", DateTime.UtcNow.ToString("O"));
+table.AddRow("Process Id", Environment.ProcessId.ToString());
+table.AddRow("OS version", Environment.OSVersion.ToString());
+table.AddRow("Machine name", Environment.MachineName);
+table.AddRow("Username", Environment.UserName);
+table.AddRow("Environment", hostAppEnvironment ?? string.Empty);
+table.BorderStyle(new Style(themeColor));
+
+var padder = new Padder(table).PadBottom(1).PadTop(0);
+
+var grid = new Grid();
+grid.AddColumn();
+grid.AddRow(padder);
+
+AnsiConsole.Write(grid);
+
+#endregion
 
 // Add services to the container.
 
