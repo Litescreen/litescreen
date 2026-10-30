@@ -18,4 +18,8 @@
     <PackageReference Include="Spectre.Console.Cli" Version="0.57.2" />
   </ItemGroup>
 
+  <ItemGroup>
+	<EmbeddedResource Include="appsettings.json" LogicalName="LitescreenCli.appsettings.json" />
+  </ItemGroup>
+
 </Project>
