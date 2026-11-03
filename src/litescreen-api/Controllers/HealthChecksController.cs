@@ -19,7 +19,7 @@ namespace LitescreenApi.Controllers
         }
 
         /// <summary>
-        /// Simple endpoint that returns a default 200 and healthy status. This is used just to make sure the API is accessible.
+        /// Healthcheck for the API itself.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
