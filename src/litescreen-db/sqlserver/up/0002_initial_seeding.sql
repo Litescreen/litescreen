@@ -8,6 +8,8 @@ DECLARE @Now datetime2 = GETUTCDATE()
 ;
 DECLARE @Active bit = 1
 ;
+DECLARE @Inactive bit = 0
+;
 
 -- ===========================================================================
 -- Seeding
@@ -154,7 +156,7 @@ INSERT INTO dbo.StorageProviderType
 	,IsActive
 )
 VALUES
-	('Filesystem', 'The image is located on the server filesystem.', @Now, @System, @Now, @System, @Active)
+	('Filesystem', 'The image is located on the server filesystem.', @Now, @System, @Now, @System, @Inactive)
 	,('Cloudflare R2', 'The image is located in the Cloudflare R2 storage service.', @Now, @System, @Now, @System, @Active)
-	,('Azure Blob', 'The image is located in the Azure Blob storage service.', @Now, @System, @Now, @System, @Active)
-	,('AWS S3', 'The image is located in the AWS S3 storage service.', @Now, @System, @Now, @System, @Active)
+	,('Azure Blob', 'The image is located in the Azure Blob storage service.', @Now, @System, @Now, @System, @Inactive)
+	,('AWS S3', 'The image is located in the AWS S3 storage service.', @Now, @System, @Now, @System, @Inactive)
