@@ -318,7 +318,6 @@ CREATE TABLE dbo.PlaylistItem (
     PlaylistId BIGINT NOT NULL,
     AssetId BIGINT NOT NULL,
     EnvironmentId BIGINT NOT NULL,
-    Name NVARCHAR(255) NULL,
     NavigationOrder INT NOT NULL,
     TransitionTriggerTypeId INT NOT NULL,
     DurationSeconds DECIMAL(18,4) NULL,
