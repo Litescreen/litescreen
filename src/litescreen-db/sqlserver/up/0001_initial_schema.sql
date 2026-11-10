@@ -307,7 +307,7 @@ CREATE TABLE dbo.PlaylistItem (
     Name NVARCHAR(255) NULL,
     NavigationOrder INT NOT NULL,
     TransitionTriggerTypeId INT NOT NULL,
-    DurationSeconds DECIMAL(18,4) NOT NULL,
+    DurationSeconds DECIMAL(18,4) NULL,
     CreatedAt DATETIME2 NOT NULL,
     CreatedBy NVARCHAR(255) NOT NULL,
     UpdatedAt DATETIME2 NOT NULL,
