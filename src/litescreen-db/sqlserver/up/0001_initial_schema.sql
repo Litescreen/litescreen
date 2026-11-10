@@ -1,3 +1,7 @@
+-- ===========================================================================
+-- Organizations, Accounts, Settings
+-- ===========================================================================
+
 CREATE TABLE dbo.Organization (
     OrganizationId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Organization PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL,
@@ -128,6 +132,10 @@ CREATE TABLE dbo.Environment (
     CONSTRAINT FK_Environment_Organization FOREIGN KEY (OrganizationId) REFERENCES dbo.Organization(OrganizationId)
 );
 
+-- ===========================================================================
+-- Assets and Playlists
+-- ===========================================================================
+
 CREATE TABLE dbo.MimeType (
     MimeTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_MimeType PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL,
@@ -180,144 +188,6 @@ CREATE TABLE dbo.Image (
     CONSTRAINT FK_Image_MimeType FOREIGN KEY (MimeTypeId) REFERENCES dbo.MimeType(MimeTypeId),
     CONSTRAINT FK_Image_StorageProviderType FOREIGN KEY (StorageProviderTypeId) REFERENCES dbo.StorageProviderType(StorageProviderTypeId),
     CONSTRAINT FK_Image_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
-);
-
-CREATE TABLE dbo.Asset (
-    AssetId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Asset PRIMARY KEY,
-    AssetTypeId INT NOT NULL,
-    EnvironmentId BIGINT NOT NULL,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NULL,
-    AssetData NVARCHAR(4000) NOT NULL,
-    ImageId BIGINT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL,
-    CONSTRAINT FK_Asset_AssetType FOREIGN KEY (AssetTypeId) REFERENCES dbo.AssetType(AssetTypeId),
-    CONSTRAINT FK_Asset_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
-    CONSTRAINT FK_Asset_Image FOREIGN KEY (ImageId) REFERENCES dbo.Image(ImageId)
-);
-
-CREATE TABLE dbo.PlaybackStatus (
-    PlaybackStatusId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlaybackStatus PRIMARY KEY,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL
-);
-
-CREATE TABLE dbo.PlayerType (
-    PlayerTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlayerType PRIMARY KEY,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL
-);
-
-CREATE TABLE dbo.ScreenStatus (
-    ScreenStatusId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_ScreenStatus PRIMARY KEY,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL
-);
-
-CREATE TABLE dbo.Screen (
-    ScreenId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Screen PRIMARY KEY,
-    EnvironmentId BIGINT NOT NULL,
-    ScreenStatusId INT NOT NULL,
-    PlaybackStatusId INT NOT NULL,
-    Name NVARCHAR(255) NULL,
-    Description NVARCHAR(4000) NULL,
-    PlayerTypeId INT NOT NULL,
-    PlayerVersion NVARCHAR(255) NOT NULL,
-    Platform NVARCHAR(255) NOT NULL,
-    OperatingSystem NVARCHAR(255) NOT NULL,
-    Architecture NVARCHAR(255) NOT NULL,
-    RAMCapacity DECIMAL(18,4) NOT NULL,
-    RegistrationToken NVARCHAR(512) NOT NULL,
-    RegisteredAt DATETIME2 NULL,
-    ApiKey NVARCHAR(512) NOT NULL,
-    LastUpdateAttemptAt DATETIME2 NULL,
-    LastSuccessfulUpdateAt DATETIME2 NULL,
-    LastHeartbeat DATETIME2 NULL,
-    LastScreenStatusAt DATETIME2 NULL,
-    LastPlaybackStatusAt DATETIME2 NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL,
-    CONSTRAINT FK_Screen_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
-    CONSTRAINT FK_Screen_ScreenStatus FOREIGN KEY (ScreenStatusId) REFERENCES dbo.ScreenStatus(ScreenStatusId),
-    CONSTRAINT FK_Screen_PlaybackStatus FOREIGN KEY (PlaybackStatusId) REFERENCES dbo.PlaybackStatus(PlaybackStatusId),
-    CONSTRAINT FK_Screen_PlayerType FOREIGN KEY (PlayerTypeId) REFERENCES dbo.PlayerType(PlayerTypeId),
-    CONSTRAINT UQ_Screen_RegistrationToken UNIQUE (RegistrationToken),
-    CONSTRAINT UQ_Screen_ApiKey UNIQUE (ApiKey)
-);
-
-CREATE TABLE dbo.TransitionTriggerType (
-    TransitionTriggerTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_TransitionTriggerType PRIMARY KEY,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NOT NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL
-);
-
-CREATE TABLE dbo.Playlist (
-    PlaylistId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Playlist PRIMARY KEY,
-    EnvironmentId BIGINT NOT NULL,
-    Name NVARCHAR(255) NOT NULL,
-    Description NVARCHAR(4000) NULL,
-    PlaylistItemsLastUpdatedAt DATETIME2 NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL,
-    CONSTRAINT FK_Playlist_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
-);
-
-CREATE TABLE dbo.PlaylistItem (
-    PlaylistItemId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlaylistItem PRIMARY KEY,
-    PlaylistId BIGINT NOT NULL,
-    AssetId BIGINT NOT NULL,
-    EnvironmentId BIGINT NOT NULL,
-    Name NVARCHAR(255) NULL,
-    NavigationOrder INT NOT NULL,
-    TransitionTriggerTypeId INT NOT NULL,
-    DurationSeconds DECIMAL(18,4) NULL,
-    CreatedAt DATETIME2 NOT NULL,
-    CreatedBy NVARCHAR(255) NOT NULL,
-    UpdatedAt DATETIME2 NOT NULL,
-    UpdatedBy NVARCHAR(255) NOT NULL,
-    IsActive BIT NOT NULL,
-    RowVersion ROWVERSION NOT NULL,
-    CONSTRAINT FK_PlaylistItem_Playlist FOREIGN KEY (PlaylistId) REFERENCES dbo.Playlist(PlaylistId),
-    CONSTRAINT FK_PlaylistItem_Asset FOREIGN KEY (AssetId) REFERENCES dbo.Asset(AssetId),
-    CONSTRAINT FK_PlaylistItem_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
-    CONSTRAINT FK_PlaylistItem_TransitionTriggerType FOREIGN KEY (TransitionTriggerTypeId) REFERENCES dbo.TransitionTriggerType(TransitionTriggerTypeId)
 );
 
 CREATE TABLE dbo.PowerBIDashboardPageViewType (
@@ -396,6 +266,152 @@ CREATE TABLE dbo.PowerBIReportSlideshowItem (
     CONSTRAINT FK_PowerBIReportSlideshowItem_Slideshow FOREIGN KEY (PowerBIReportSlideshowId) REFERENCES dbo.PowerBIReportSlideshow(PowerBIReportSlideshowId),
     CONSTRAINT FK_PowerBIReportSlideshowItem_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
 );
+
+CREATE TABLE dbo.Asset (
+    AssetId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Asset PRIMARY KEY,
+    AssetTypeId INT NOT NULL,
+    EnvironmentId BIGINT NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NULL,
+    AssetData NVARCHAR(4000) NOT NULL,
+    ImageId BIGINT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Asset_AssetType FOREIGN KEY (AssetTypeId) REFERENCES dbo.AssetType(AssetTypeId),
+    CONSTRAINT FK_Asset_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
+    CONSTRAINT FK_Asset_Image FOREIGN KEY (ImageId) REFERENCES dbo.Image(ImageId)
+);
+
+CREATE TABLE dbo.TransitionTriggerType (
+    TransitionTriggerTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_TransitionTriggerType PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL
+);
+
+CREATE TABLE dbo.Playlist (
+    PlaylistId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Playlist PRIMARY KEY,
+    EnvironmentId BIGINT NOT NULL,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NULL,
+    PlaylistItemsLastUpdatedAt DATETIME2 NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Playlist_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
+);
+
+CREATE TABLE dbo.PlaylistItem (
+    PlaylistItemId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlaylistItem PRIMARY KEY,
+    PlaylistId BIGINT NOT NULL,
+    AssetId BIGINT NOT NULL,
+    EnvironmentId BIGINT NOT NULL,
+    Name NVARCHAR(255) NULL,
+    NavigationOrder INT NOT NULL,
+    TransitionTriggerTypeId INT NOT NULL,
+    DurationSeconds DECIMAL(18,4) NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_PlaylistItem_Playlist FOREIGN KEY (PlaylistId) REFERENCES dbo.Playlist(PlaylistId),
+    CONSTRAINT FK_PlaylistItem_Asset FOREIGN KEY (AssetId) REFERENCES dbo.Asset(AssetId),
+    CONSTRAINT FK_PlaylistItem_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
+    CONSTRAINT FK_PlaylistItem_TransitionTriggerType FOREIGN KEY (TransitionTriggerTypeId) REFERENCES dbo.TransitionTriggerType(TransitionTriggerTypeId)
+);
+
+-- ===========================================================================
+-- Screens and Players
+-- ===========================================================================
+
+CREATE TABLE dbo.PlaybackStatus (
+    PlaybackStatusId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlaybackStatus PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL
+);
+
+CREATE TABLE dbo.PlayerType (
+    PlayerTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PlayerType PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL
+);
+
+CREATE TABLE dbo.ScreenStatus (
+    ScreenStatusId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_ScreenStatus PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL
+);
+
+CREATE TABLE dbo.Screen (
+    ScreenId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Screen PRIMARY KEY,
+    EnvironmentId BIGINT NOT NULL,
+    ScreenStatusId INT NOT NULL,
+    PlaybackStatusId INT NOT NULL,
+    Name NVARCHAR(255) NULL,
+    Description NVARCHAR(4000) NULL,
+    PlayerTypeId INT NOT NULL,
+    PlayerVersion NVARCHAR(255) NOT NULL,
+    Platform NVARCHAR(255) NOT NULL,
+    OperatingSystem NVARCHAR(255) NOT NULL,
+    Architecture NVARCHAR(255) NOT NULL,
+    RAMCapacity DECIMAL(18,4) NOT NULL,
+    RegistrationToken NVARCHAR(512) NOT NULL,
+    RegisteredAt DATETIME2 NULL,
+    ApiKey NVARCHAR(512) NOT NULL,
+    LastUpdateAttemptAt DATETIME2 NULL,
+    LastSuccessfulUpdateAt DATETIME2 NULL,
+    LastHeartbeat DATETIME2 NULL,
+    LastScreenStatusAt DATETIME2 NULL,
+    LastPlaybackStatusAt DATETIME2 NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Screen_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
+    CONSTRAINT FK_Screen_ScreenStatus FOREIGN KEY (ScreenStatusId) REFERENCES dbo.ScreenStatus(ScreenStatusId),
+    CONSTRAINT FK_Screen_PlaybackStatus FOREIGN KEY (PlaybackStatusId) REFERENCES dbo.PlaybackStatus(PlaybackStatusId),
+    CONSTRAINT FK_Screen_PlayerType FOREIGN KEY (PlayerTypeId) REFERENCES dbo.PlayerType(PlayerTypeId),
+    CONSTRAINT UQ_Screen_RegistrationToken UNIQUE (RegistrationToken),
+    CONSTRAINT UQ_Screen_ApiKey UNIQUE (ApiKey)
+);
+
+-- ===========================================================================
+-- Indices
+-- ===========================================================================
 
 CREATE INDEX IX_Billing_OrganizationId ON dbo.Billing(OrganizationId);
 CREATE INDEX IX_Environment_OrganizationId ON dbo.Environment(OrganizationId);
