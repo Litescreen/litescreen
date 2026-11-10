@@ -273,7 +273,7 @@ CREATE TABLE dbo.Asset (
     EnvironmentId BIGINT NOT NULL,
     Name NVARCHAR(255) NOT NULL,
     Description NVARCHAR(4000) NULL,
-    AssetData NVARCHAR(4000) NOT NULL,
+    AssetData NVARCHAR(4000) NULL,
     ImageId BIGINT NULL,
     CreatedAt DATETIME2 NOT NULL,
     CreatedBy NVARCHAR(255) NOT NULL,
