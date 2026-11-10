@@ -190,6 +190,42 @@ CREATE TABLE dbo.Image (
     CONSTRAINT FK_Image_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
 );
 
+CREATE TABLE dbo.Video (
+    VideoId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Video PRIMARY KEY,
+    MimeTypeId INT NOT NULL,
+    StorageProviderTypeId INT NOT NULL,
+    EnvironmentId BIGINT NOT NULL,
+    Filepath NVARCHAR(4000) NULL,
+    StorageProviderKey NVARCHAR(4000) NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Video_MimeType FOREIGN KEY (MimeTypeId) REFERENCES dbo.MimeType(MimeTypeId),
+    CONSTRAINT FK_Video_StorageProviderType FOREIGN KEY (StorageProviderTypeId) REFERENCES dbo.StorageProviderType(StorageProviderTypeId),
+    CONSTRAINT FK_Video_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
+);
+
+CREATE TABLE dbo.Audio (
+    AudioId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Audio PRIMARY KEY,
+    MimeTypeId INT NOT NULL,
+    StorageProviderTypeId INT NOT NULL,
+    EnvironmentId BIGINT NOT NULL,
+    Filepath NVARCHAR(4000) NULL,
+    StorageProviderKey NVARCHAR(4000) NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Audio_MimeType FOREIGN KEY (MimeTypeId) REFERENCES dbo.MimeType(MimeTypeId),
+    CONSTRAINT FK_Audio_StorageProviderType FOREIGN KEY (StorageProviderTypeId) REFERENCES dbo.StorageProviderType(StorageProviderTypeId),
+    CONSTRAINT FK_Audio_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
+);
+
 CREATE TABLE dbo.PowerBIDashboardPageViewType (
     DashboardPageViewTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PowerBIDashboardPageViewType PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL,
@@ -275,6 +311,8 @@ CREATE TABLE dbo.Asset (
     Description NVARCHAR(4000) NULL,
     AssetData NVARCHAR(4000) NULL,
     ImageId BIGINT NULL,
+    VideoId BIGINT NULL,
+    AudioId BIGINT NULL,
     CreatedAt DATETIME2 NOT NULL,
     CreatedBy NVARCHAR(255) NOT NULL,
     UpdatedAt DATETIME2 NOT NULL,
@@ -283,7 +321,9 @@ CREATE TABLE dbo.Asset (
     RowVersion ROWVERSION NOT NULL,
     CONSTRAINT FK_Asset_AssetType FOREIGN KEY (AssetTypeId) REFERENCES dbo.AssetType(AssetTypeId),
     CONSTRAINT FK_Asset_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
-    CONSTRAINT FK_Asset_Image FOREIGN KEY (ImageId) REFERENCES dbo.Image(ImageId)
+    CONSTRAINT FK_Asset_Image FOREIGN KEY (ImageId) REFERENCES dbo.Image(ImageId),
+    CONSTRAINT FK_Asset_Video FOREIGN KEY (VideoId) REFERENCES dbo.Video(VideoId),
+    CONSTRAINT FK_Asset_Audio FOREIGN KEY (AudioId) REFERENCES dbo.Audio(AudioId)
 );
 
 CREATE TABLE dbo.TransitionTriggerType (
