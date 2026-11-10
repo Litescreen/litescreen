@@ -128,6 +128,30 @@ CREATE TABLE dbo.Environment (
     CONSTRAINT FK_Environment_Organization FOREIGN KEY (OrganizationId) REFERENCES dbo.Organization(OrganizationId)
 );
 
+CREATE TABLE dbo.MimeType (
+    MimeTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_MimeType PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+)
+
+CREATE TABLE dbo.StorageProviderType (
+    StorageProviderTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_StorageProviderTypeId PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    Description NVARCHAR(4000) NOT NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL
+);
+
 CREATE TABLE dbo.AssetType (
     AssetTypeId INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_AssetType PRIMARY KEY,
     Name NVARCHAR(255) NOT NULL,
@@ -140,6 +164,24 @@ CREATE TABLE dbo.AssetType (
     RowVersion ROWVERSION NOT NULL
 );
 
+CREATE TABLE dbo.Image (
+    ImageId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Image PRIMARY KEY,
+    MimeTypeId INT NOT NULL,
+    StorageProviderTypeId INT NOT NULL,
+    EnvironmentId BIGINT NOT NULL,
+    Filepath NVARCHAR(4000) NULL,
+    StorageProviderKey NVARCHAR(4000) NULL,
+    CreatedAt DATETIME2 NOT NULL,
+    CreatedBy NVARCHAR(255) NOT NULL,
+    UpdatedAt DATETIME2 NOT NULL,
+    UpdatedBy NVARCHAR(255) NOT NULL,
+    IsActive BIT NOT NULL,
+    RowVersion ROWVERSION NOT NULL,
+    CONSTRAINT FK_Image_MimeType FOREIGN KEY (MimeTypeId) REFERENCES dbo.MimeType(MimeTypeId),
+    CONSTRAINT FK_Image_StorageProviderType FOREIGN KEY (StorageProviderTypeId) REFERENCES dbo.StorageProviderType(StorageProviderTypeId),
+    CONSTRAINT FK_Image_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
+);
+
 CREATE TABLE dbo.Asset (
     AssetId BIGINT IDENTITY(1,1) NOT NULL CONSTRAINT PK_Asset PRIMARY KEY,
     AssetTypeId INT NOT NULL,
@@ -147,6 +189,7 @@ CREATE TABLE dbo.Asset (
     Name NVARCHAR(255) NOT NULL,
     Description NVARCHAR(4000) NULL,
     AssetData NVARCHAR(4000) NOT NULL,
+    ImageId BIGINT NULL,
     CreatedAt DATETIME2 NOT NULL,
     CreatedBy NVARCHAR(255) NOT NULL,
     UpdatedAt DATETIME2 NOT NULL,
@@ -154,7 +197,8 @@ CREATE TABLE dbo.Asset (
     IsActive BIT NOT NULL,
     RowVersion ROWVERSION NOT NULL,
     CONSTRAINT FK_Asset_AssetType FOREIGN KEY (AssetTypeId) REFERENCES dbo.AssetType(AssetTypeId),
-    CONSTRAINT FK_Asset_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId)
+    CONSTRAINT FK_Asset_Environment FOREIGN KEY (EnvironmentId) REFERENCES dbo.Environment(EnvironmentId),
+    CONSTRAINT FK_Asset_Image FOREIGN KEY (ImageId) REFERENCES dbo.Image(ImageId)
 );
 
 CREATE TABLE dbo.PlaybackStatus (
