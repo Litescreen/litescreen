@@ -1,4 +1,5 @@
 using LitescreenApi;
+using LitescreenCore.DependencyInjection;
 using Microsoft.OpenApi;
 using Spectre.Console;
 using System.Reflection;
@@ -45,6 +46,7 @@ AnsiConsole.Write(grid);
 
 // Add services to the container.
 
+builder.Services.AddLitescreenCore(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
