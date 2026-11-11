@@ -38,11 +38,10 @@ namespace LitescreenCore.StorageProviders
                 BucketName = _litescreenAppSettings.R2Settings.BucketName,
                 Key = objectKey,
                 Verb = HttpVerb.GET,
-                Expires = DateTime.Now.AddMinutes(_litescreenAppSettings.R2Settings.DefaultPresignedUrlExpirationMinutes),
+                Expires = DateTime.UtcNow.AddMinutes(_litescreenAppSettings.R2Settings.DefaultPresignedUrlExpirationMinutes),
             };
 
             var presignedUrl = _s3Client.GetPreSignedURL(presign);
-            _logger.LogInformation("Generated presigned download URL: {PresignedUrl}", presignedUrl);
             return presignedUrl;
         }
 
@@ -53,11 +52,10 @@ namespace LitescreenCore.StorageProviders
                 BucketName = _litescreenAppSettings.R2Settings.BucketName,
                 Key = objectKey,
                 Verb = HttpVerb.PUT,
-                Expires = DateTime.Now.AddMinutes(_litescreenAppSettings.R2Settings.DefaultPresignedUrlExpirationMinutes),
+                Expires = DateTime.UtcNow.AddMinutes(_litescreenAppSettings.R2Settings.DefaultPresignedUrlExpirationMinutes),
             };
 
             var presignedUrl = _s3Client.GetPreSignedURL(presign);
-            _logger.LogInformation("Generated presigned upload URL: {PresignedUrl}", presignedUrl);
             return presignedUrl;
         }
     }
