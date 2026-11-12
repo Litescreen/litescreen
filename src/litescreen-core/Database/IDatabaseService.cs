@@ -19,4 +19,10 @@ public interface IDatabaseService
     /// </summary>
     /// <returns>The database connection.</returns>
     DbConnection CreateConnection();
+
+    /// <summary>
+    /// Load and read the sql filename.
+    /// </summary>
+    /// <returns></returns>
+    string LoadSqlFile(string sqlFilename);
 }
