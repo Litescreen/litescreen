@@ -1,0 +1,6 @@
+@LitescreenConsoleHost_HostAddress = http://localhost:5034
+
+GET {{LitescreenConsoleHost_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
