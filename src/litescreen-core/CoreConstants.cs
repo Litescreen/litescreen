@@ -2,6 +2,9 @@
 {
     public static class CoreConstants
     {
+        public const string PlatformName = "Litescreen";
+        public const string ConfigFileName = "litescreen.config.json";
+
         public static class DatabaseProviders
         {
             public const string SqlServer = "sqlserver";
