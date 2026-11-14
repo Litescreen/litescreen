@@ -1,4 +1,5 @@
 using LitescreenConsoleHost;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.OpenApi;
 using Spectre.Console;
 using System.Reflection;
@@ -63,7 +64,22 @@ builder.Services.AddOpenApi(options =>
     });
 });
 
+// Forwarded headers from trusted reverse proxies.
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders =
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
+
+    // Add KnownProxies / KnownNetworks here if your
+    // reverse proxy isn't covered by the default loopback trust.
+});
+
 var app = builder.Build();
+
+// Must execute before middleware that relies on
+// scheme, host, or client IP information.
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -75,6 +91,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.MapStaticAssets();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
